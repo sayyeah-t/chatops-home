@@ -3,7 +3,8 @@ package config
 var (
 	configurations = map[string]map[string]string{
 		"default": {
-			"nodename": "",
+			"nodename":    "",
+			"chat_driver": "",
 		},
 		"slack": {
 			"channel":   "",
