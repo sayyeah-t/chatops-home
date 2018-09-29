@@ -4,15 +4,20 @@ import (
 	"github.com/go-ini/ini"
 )
 
-var (
-	configPath = "/etc/chatops-home/chatops-home.conf"
-)
-
-func Init() error {
-	err := loadConf()
+func Init(configPath string) error {
+	err := loadConf(configPath)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func InitWithAdditionalArgs(configPath string,
+	args map[string]map[string]string) error {
+	for section, content := range args {
+		configurations[section] = content
+	}
+	loadConf(configPath)
 	return nil
 }
 
@@ -29,7 +34,7 @@ func DumpConfig() {
 	}
 }
 
-func loadConf() error {
+func loadConf(configPath string) error {
 	cfg, err := ini.InsensitiveLoad(configPath)
 	if err != nil {
 		return err

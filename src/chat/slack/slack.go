@@ -2,14 +2,17 @@ package slack
 
 import (
 	sl "github.com/nlopes/slack"
-	"github.com/sayyeah-t/chatops-home/src/config"
+	"github.com/sayyeah-t/take2-chatops/src/config"
+	"github.com/sayyeah-t/take2-chatops/src/opsdriver"
+	"github.com/sayyeah-t/take2-chatops/src/util"
 )
 
 type SlackInterface struct {
-	confMap map[string]string
-	api     *sl.Client
-	rtm     *sl.RTM
-	runFlag bool
+	opsDriver opsdriver.DriverInterface
+	confMap   map[string]string
+	api       *sl.Client
+	rtm       *sl.RTM
+	runFlag   bool
 }
 
 func Init() *SlackInterface {
@@ -20,6 +23,10 @@ func Init() *SlackInterface {
 	return si
 }
 
+func (si *SlackInterface) SetOpsDriver(driver opsdriver.DriverInterface) {
+	si.opsDriver = driver
+}
+
 func (si *SlackInterface) Run() {
 	go si.rtm.ManageConnection()
 	for si.runFlag {
@@ -27,7 +34,7 @@ func (si *SlackInterface) Run() {
 		case msg := <-si.rtm.IncomingEvents:
 			switch ev := msg.Data.(type) {
 			case *sl.MessageEvent:
-				println("Catched Message Event!")
+				//println("Catched Message Event!")
 				si.handleCommand(ev.Text)
 			case *sl.InvalidAuthEvent:
 				println("Invalid credentials")
@@ -59,6 +66,12 @@ func (si *SlackInterface) auth() {
 }
 
 func (si *SlackInterface) handleCommand(command string) {
-	// temp func
 	si.PostMessage("Input: \"" + command + "\"")
+	if util.IsCommand(command) {
+		resp := si.opsDriver.DoCommand(util.ParseCommand(command))
+		if resp != "" {
+			si.PostMessage(resp)
+		}
+		si.PostMessage("Complete!")
+	}
 }

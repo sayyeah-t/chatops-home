@@ -1,2 +1,2 @@
-# chatops-home
-chatops system for home system
+# take2-chatops
+chatops for home system
