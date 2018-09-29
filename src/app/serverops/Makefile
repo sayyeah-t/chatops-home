@@ -9,10 +9,13 @@ clean:
 	rm -f serverops
 install:
 	sudo mkdir -p $(CONFDIR)
-	if [ ! -e $(CONFDIR)/serverops.conf ]; then\
-		pwd;\
-		sudo cp ../../../etc/take2-chatops/take2-chatops.conf $(CONFDIR)/serverops.conf;\
-		sudo cp serverops $(BINDIR);\
+	if [ ! -e /etc/take2-chatops/serverops.conf ]; then\
+		cp ../../../etc/take2-chatops/take2-chatops.conf serverops.conf;\
+		echo "" >> serverops.conf;\
+		echo "[serverops]" >> serverops.conf;\
+		echo "nodename =" >> serverops.conf;\
+		sudo cp serverops.conf /etc/take2-chatops/serverops.conf;\
+		sudo cp serverops /usr/local/bin;\
 	fi
 uninstall:
 	sudo rm -f $(BINDIR)/serverops

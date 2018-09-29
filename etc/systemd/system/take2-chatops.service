@@ -1,0 +1,12 @@
+[Unit]
+Description=chatops system
+After=network.target
+
+[Service]
+User=root
+ExecStart=/usr/local/bin/take2-chatops
+ExecStop=/bin/kill -WINCH ${MAINPID}
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
