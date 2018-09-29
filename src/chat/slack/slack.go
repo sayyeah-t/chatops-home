@@ -66,12 +66,10 @@ func (si *SlackInterface) auth() {
 }
 
 func (si *SlackInterface) handleCommand(command string) {
-	si.PostMessage("Input: \"" + command + "\"")
 	if util.IsCommand(command) {
 		resp := si.opsDriver.DoCommand(util.ParseCommand(command))
 		if resp != "" {
 			si.PostMessage(resp)
 		}
-		si.PostMessage("Complete!")
 	}
 }
