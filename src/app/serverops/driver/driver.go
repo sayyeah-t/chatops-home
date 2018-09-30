@@ -38,7 +38,7 @@ func (d *Driver) health(command []string) string {
 func (d *Driver) shutdown(command []string) string {
 	if len(command) != 1 {
 		if command[1] == d.confMap["nodename"] {
-			err := exec.Command("shutdown", "-h", "+10").Run()
+			err := exec.Command("shutdown", "-h", "-t", "10").Run()
 			if err != nil {
 				return err.Error()
 			}

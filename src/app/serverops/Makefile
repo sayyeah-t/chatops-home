@@ -12,12 +12,12 @@ clean:
 	rm -f serverops.service
 install:
 	sudo mkdir -p $(CONFDIR)
-	if [ ! -e /etc/take2-chatops/serverops.conf ]; then\
+	if [ ! -e $(CONFDIR)/serverops.conf ]; then\
 		cp ../../../etc/take2-chatops/take2-chatops.conf serverops.conf;\
 		echo "" >> serverops.conf;\
 		echo "[serverops]" >> serverops.conf;\
 		echo "nodename =" >> serverops.conf;\
-		sudo cp serverops.conf /etc/take2-chatops/serverops.conf;\
+		sudo cp serverops.conf $(CONFDIR)/serverops.conf;\
 		cp ../../../etc/systemd/system/take2-chatops.service serverops.service;\
 		sed -i 's/take2-chatops/serverops/g' serverops.service;\
 		sudo cp serverops.service $(SERVICEFILEDIR)/serverops.service;\
