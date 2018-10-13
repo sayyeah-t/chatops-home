@@ -62,7 +62,7 @@ func (d *Driver) initConfig() {
 	jsonText = jsonText + "}"
 	ioutil.WriteFile("config.txt", []byte(jsonText), os.ModePerm)
 	d.updateConfigArg("user_lang", "ja-JP")
-	d.updateConfigArg("cookie", d.confMap["cookie"])
+	d.updateConfigArg("cookie", d.confMap["iksm_session"])
 	d.updateConfigArg("api_key", d.confMap["api_key"])
 }
 
@@ -83,7 +83,7 @@ func (d *Driver) updateConfigArg(key string, value string) error {
 	err := exec.Command(
 		"sed",
 		"-i",
-		"'s/\""+key+".*$/\""+key+"\": \""+value+"\"/g'",
+		"s/\""+key+"\": \".*\"/\""+key+"\": \""+value+"\"/g",
 		d.confMap["uploader_path"]+"/config.txt",
 	).Run()
 	if err != nil {
