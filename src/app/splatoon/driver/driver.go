@@ -130,16 +130,19 @@ func (d *Driver) stopUpload(command []string) string {
 func (d *Driver) uploadLoop() {
 	for {
 		if d.upload {
-			err := exec.Command(
+			out, err := exec.Command(
 				"python",
 				"splatnet2statink.py",
 				"-r",
-			).Run()
+			).Output()
 			if err != nil {
 				d.latestLog = err.Error()
 			} else {
 				d.latestLog = "splatnet2statink was finished correctly."
 			}
+			println("=== splatnet2statink output ===")
+			println(string(out))
+			println("===============================")
 			time.Sleep(55 * time.Second)
 		}
 		time.Sleep(5 * time.Second)
@@ -154,8 +157,10 @@ func (d *Driver) updateUploader() string {
 		"master",
 	).Run()
 	if err != nil {
+		println(err.Error())
 		return err.Error()
 	}
+	println("Got master branch!")
 	return "splatnet2statinkをアップデートしたぜ！"
 }
 
