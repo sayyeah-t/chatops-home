@@ -1,5 +1,6 @@
 CONFDIR=/etc/take2-chatops
 BINDIR=/usr/local/bin
+SERVICEFILEDIR=/usr/lib/systemd/system
 
 all: dep build
 build:
@@ -16,9 +17,11 @@ install:
 		echo "[splatoon]" >> splatoon.conf;\
 		echo "iksm_session =" >> splatoon.conf;\
 		echo "api_key =" >> splatoon.conf;\
-		echo "user_lang = ja-JP" >> splatoon.conf;\
 		echo "uploader_path = /opt/splatnet2statink" >> splatoon.conf;\
 		sudo cp splatoon.conf $(CONFDIR)/splatoon.conf;\
+		cp ../../../etc/systemd/system/take2-chatops.service splatoon.service;\
+		sed -i 's/take2-chatops/splatoon/g' splatoon.service;\
+		sudo cp splatoon.service $(SERVICEFILEDIR)/splatoon.service;\
 		sudo cp splatoon $(BINDIR);\
 	fi
 uninstall:
