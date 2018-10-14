@@ -38,6 +38,11 @@ func Init() *Driver {
 func (d *Driver) DoCommand(command []string) string {
 	resp := ""
 	switch command[0] {
+	case "!help":
+		resp = d.helpMessage()
+	case "!once":
+		d.updateUploader()
+		resp = d.uploadOnce(command)
 	case "!start":
 		d.updateUploader()
 		resp = d.startUpload(command)
@@ -87,7 +92,6 @@ func (d *Driver) updateConfigArg(key string, value string) error {
 		d.confMap["uploader_path"]+"/config.txt",
 	).Run()
 	if err != nil {
-		println(err.Error())
 		return err
 	}
 	return nil
@@ -130,26 +134,28 @@ func (d *Driver) stopUpload(command []string) string {
 func (d *Driver) uploadLoop() {
 	for {
 		if d.upload {
-			out, err := exec.Command(
-				"python",
-				"splatnet2statink.py",
-				"-r",
-			).Output()
-			if err != nil {
-				d.latestLog = err.Error()
-			} else {
-				d.latestLog = "splatnet2statink was finished correctly."
-			}
-			println("=== splatnet2statink output ===")
-			println(string(out))
-			println("===============================")
-			time.Sleep(55 * time.Second)
+			d.execUpload()
+			time.Sleep(85 * time.Second)
 		}
 		time.Sleep(5 * time.Second)
 	}
 }
 
-func (d *Driver) updateUploader() string {
+func (d *Driver) execUpload() {
+	out, err := exec.Command(
+		"python",
+		"splatnet2statink.py",
+		"-r",
+	).Output()
+	if err != nil {
+		d.latestLog = err.Error()
+	} else {
+		d.latestLog = string(out)
+	}
+	println(string(out))
+}
+
+func (d *Driver) updateUploader() {
 	err := exec.Command(
 		"git",
 		"pull",
@@ -158,10 +164,9 @@ func (d *Driver) updateUploader() string {
 	).Run()
 	if err != nil {
 		println(err.Error())
-		return err.Error()
+		return
 	}
-	println("Got master branch!")
-	return "splatnet2statinkをアップデートしたぜ！"
+	println("Update splatnet2statink completed!")
 }
 
 func (d *Driver) getStatus() string {
@@ -169,4 +174,35 @@ func (d *Driver) getStatus() string {
 		return d.latestLog
 	}
 	return "今、アップロードはしてないっぽいぞ？"
+}
+
+func (d *Driver) helpMessage() string {
+	msg := "コマンドはこんな感じで使ってくれよな！\n"
+	msg = msg + "```\n"
+	msg = msg + "!start [iksm_session]\n"
+	msg = msg + "!stop\n"
+	msg = msg + "!once [iksm_session]\n"
+	msg = msg + "!status\n"
+	msg = msg + "```"
+	return msg
+}
+
+func (d *Driver) uploadOnce(command []string) string {
+	if d.upload {
+		return "アップロードモード中にこのコマンドは使えないぞー"
+	}
+	var msg string
+	switch len(command) {
+	case 1:
+		msg = "新しいリザルトをアップロードするぜ！"
+	case 2:
+		if err := d.updateToken(command[1]); err != nil {
+			return err.Error()
+		}
+		msg = "iksm_sessionの更新完了！\n新しいリザルトをアップロードするぜ！"
+	default:
+		msg = "コマンドの使い方間違ってんぞ！"
+	}
+	d.execUpload()
+	return msg
 }
