@@ -5,7 +5,7 @@ After=network.target
 [Service]
 User=root
 ExecStart=/usr/local/bin/take2-chatops
-ExecStop=/bin/kill -WINCH ${MAINPID}
+ExecStop=/bin/kill -INT ${MAINPID}
 Type=simple
 
 [Install]
