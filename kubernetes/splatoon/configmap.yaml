@@ -1,0 +1,15 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: splatoon-chatops-conf
+data:
+  splatoon.conf: |
+    [default]
+    chat_driver = slack
+    [slack]
+    channel = changeme
+    bot_token = changeme
+    [splatoon]
+    iksm_session = dummy
+    api_key = changeme
+    uploader_path = /opt/splatnet2statink
