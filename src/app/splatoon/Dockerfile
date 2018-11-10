@@ -11,7 +11,7 @@ RUN mkdir /etc/take2-chatops && \
     mkdir -p /opt/splatnet2statink
     git clone https://github.com/frozenpandaman/splatnet2statink.git \
     /opt/splatnet2statink && \
-    pip install -r /requirements.txt && \
+    pip install -r /requirements.txt
 
 
 CMD ["/usr/bin/splatoon"]
