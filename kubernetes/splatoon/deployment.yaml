@@ -17,7 +17,7 @@ spec:
           image: docker.io/sayyeah-t/splatoon-chatops:arm-latest
           imagePullPolicy: Always
           volumeMounts:
-            - name: splatoon-conf
+            - name: splatoon-chatops-conf
               mountPath: /etc/take2-chatops
       volumes:
         - name: splatoon-chatops-conf
