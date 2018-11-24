@@ -4,7 +4,7 @@ BINDIR=/usr/local/bin
 SERVICEFILEDIR=/usr/lib/systemd/system
 BASECONFDIR=../../../etc/take2-chatops
 BASESERVICEFILEDIR=../../../etc/systemd/system
-DEB_WORKDIR=work
+DEB_WORKDIR=package
 
 all: dep build
 build:
@@ -16,6 +16,8 @@ clean:
 	rm -f $(APPNAME)
 	rm -f $(APPNAME).conf
 	rm -f $(APPNAME).service
+	rm -rf $(APPNAME)*.deb
+	rm -rf $(DEB_WORKDIR)
 install:
 	sudo mkdir -p $(CONFDIR)
 	if [ ! -e $(CONFDIR)/$(APPNAME).conf ]; then\
@@ -30,4 +32,12 @@ uninstall:
 dep:
 	go get -v github.com/nlopes/slack
 	go get -v github.com/go-ini/ini
-
+package:
+	mkdir -p $(DEB_WORKDIR)$(BINDIR)
+	cp $(APPNAME) $(DEB_WORKDIR)$(BINDIR)
+	mkdir -p $(DEB_WORKDIR)$(CONFDIR)
+	cp $(APPNAME).conf $(DEB_WORKDIR)$(CONFDIR)
+	mkdir -p $(DEB_WORKDIR)$(SERVICEFILEDIR)
+	cp $(APPNAME).service $(DEB_WORKDIR)$(SERVICEFILEDIR)
+	cp -R DEBIAN $(DEB_WORKDIR)
+	fakeroot dpkg-deb --build $(DEB_WORKDIR) .
