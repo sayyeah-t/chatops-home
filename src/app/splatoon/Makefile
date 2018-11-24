@@ -1,32 +1,43 @@
+APPNAME=splatoon
 CONFDIR=/etc/take2-chatops
 BINDIR=/usr/local/bin
 SERVICEFILEDIR=/usr/lib/systemd/system
+BASECONFDIR=../../../etc/take2-chatops
+BASESERVICEFILEDIR=../../../etc/systemd/system
+DEB_WORKDIR=package
 
 all: dep build
 build:
-	go build -v -o splatoon main.go
+	go build -v -o $(APPNAME) main.go
+	cat $(BASECONFDIR)/take2-chatops.conf $(BASECONFDIR)/$(APPNAME).conf > $(APPNAME).conf
+	sed 's/take2-chatops/$(APPNAME)/g' $(BASESERVICEFILEDIR)/take2-chatops.service > $(APPNAME).service
 clean:
 	go clean
-	rm -f splatoon
-	rm -f splatoon.conf
+	rm -f $(APPNAME)
+	rm -f $(APPNAME).conf
+	rm -f $(APPNAME).service
+	rm -rf $(APPNAME)*.deb
+	rm -rf $(DEB_WORKDIR)
 install:
 	sudo mkdir -p $(CONFDIR)
-	if [ ! -e $(CONFDIR)/splatoon.conf ]; then\
-		cp ../../../etc/take2-chatops/take2-chatops.conf splatoon.conf;\
-		echo "" >> splatoon.conf;\
-		echo "[splatoon]" >> splatoon.conf;\
-		echo "iksm_session =" >> splatoon.conf;\
-		echo "api_key =" >> splatoon.conf;\
-		echo "uploader_path = /opt/splatnet2statink" >> splatoon.conf;\
-		sudo cp splatoon.conf $(CONFDIR)/splatoon.conf;\
-		cp ../../../etc/systemd/system/take2-chatops.service splatoon.service;\
-		sed -i 's/take2-chatops/splatoon/g' splatoon.service;\
-		sudo cp splatoon.service $(SERVICEFILEDIR)/splatoon.service;\
-		sudo cp splatoon $(BINDIR);\
+	if [ ! -e $(CONFDIR)/$(APPNAME).conf ]; then\
+		sudo cp $(APPNAME).conf $(CONFDIR)/$(APPNAME).conf;\
+		sudo cp $(APPNAME).service $(SERVICEFILEDIR)/$(APPNAME).service;\
+		sudo cp $(APPNAME) $(BINDIR);\
 	fi
 uninstall:
-	sudo rm -f $(BINDIR)/splatoon
-	sudo rm -f $(CONFDIR)/splatoon.conf
+	sudo rm -f $(BINDIR)/$(APPNAME)
+	sudo rm -f $(CONFDIR)/$(APPNAME).conf
+	sudo rm -f $(SERVICEFILEDIR)/$(APPNAME).service
 dep:
 	go get -v github.com/nlopes/slack
 	go get -v github.com/go-ini/ini
+package:
+	mkdir -p $(DEB_WORKDIR)$(BINDIR)
+	cp $(APPNAME) $(DEB_WORKDIR)$(BINDIR)
+	mkdir -p $(DEB_WORKDIR)$(CONFDIR)
+	cp $(APPNAME).conf $(DEB_WORKDIR)$(CONFDIR)
+	mkdir -p $(DEB_WORKDIR)$(SERVICEFILEDIR)
+	cp $(APPNAME).service $(DEB_WORKDIR)$(SERVICEFILEDIR)
+	cp -R DEBIAN $(DEB_WORKDIR)
+	fakeroot dpkg-deb --build $(DEB_WORKDIR) .

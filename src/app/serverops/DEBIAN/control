@@ -1,0 +1,5 @@
+Version: 1.0.0
+Package: serverops
+Architecture: armhf
+Maintainer: Take2 <@SayYeah1121>
+Description: take2-chatops for server
