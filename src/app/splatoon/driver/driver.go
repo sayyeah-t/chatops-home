@@ -146,6 +146,7 @@ func (d *Driver) execUpload() {
 		"python",
 		"splatnet2statink.py",
 		"-r",
+		"--salmon",
 	).Output()
 	if err != nil {
 		d.latestLog = err.Error()
