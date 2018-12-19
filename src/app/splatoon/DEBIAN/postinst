@@ -3,6 +3,6 @@
 APPNAME=splatoon
 CONFDIR=/etc/take2-chatops
 
-if [ ! -e $CONFDIR/$APPNAME.conf ]; then
+if [ -e $CONFDIR/$APPNAME.conf ]; then
     mv $CONFDIR/_$APPNAME.conf $CONFDIR/$APPNAME.conf
 fi
