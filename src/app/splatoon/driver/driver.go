@@ -142,18 +142,33 @@ func (d *Driver) uploadLoop() {
 }
 
 func (d *Driver) execUpload() {
-	out, err := exec.Command(
+	var battleLog string
+	battleOut, err := exec.Command(
+		"python",
+		"splatnet2statink.py",
+		"-r",
+	).Output()
+	if err != nil {
+		battleLog = err.Error() + "\n"
+	} else {
+		battleLog = string(battleOut) + "\n"
+	}
+	println(string(battleLog))
+
+	var salmonLog string
+	salmonOut, err := exec.Command(
 		"python",
 		"splatnet2statink.py",
 		"-r",
 		"--salmon",
 	).Output()
 	if err != nil {
-		d.latestLog = err.Error()
+		salmonLog = err.Error() + "\n"
 	} else {
-		d.latestLog = string(out)
+		salmonLog = string(salmonOut) + "\n"
 	}
-	println(string(out))
+	println(string(salmonLog))
+	d.latestLog = "Battle\n" + battleLog + "Salmon\n" + salmonLog
 }
 
 func (d *Driver) updateUploader() {
