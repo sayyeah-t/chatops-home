@@ -1,0 +1,9 @@
+#!/bin/bash
+
+APPNAME=serverops
+CONFDIR=/etc/take2-chatops
+
+if [ ! -e $CONFDIR/$APPNAME.conf ]; then
+    mv $CONFDIR/_$APPNAME.conf $CONFDIR/$APPNAME.conf
+fi
+systemctl daemon-reload
