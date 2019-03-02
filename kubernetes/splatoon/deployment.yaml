@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: splatoon-chatops
-          image: docker.io/sayyeah-t/splatoon-chatops:arm-latest
+          image: docker.io/sayyeah/splatoon-chatops:arm-latest
           imagePullPolicy: Always
           volumeMounts:
             - name: splatoon-chatops-conf
