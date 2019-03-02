@@ -7,7 +7,8 @@ COPY requirements.txt /
 
 RUN mkdir /etc/take2-chatops && \
     apt-get update && \
-    apt-get install -y git python python-pip && \
+    apt-get install -y git python python-setuptools python-pip && \
+    python -m pip install -U pip && \
     mkdir -p /opt/splatnet2statink && \
     git clone https://github.com/frozenpandaman/splatnet2statink.git \
     /opt/splatnet2statink && \
