@@ -144,7 +144,7 @@ func (d *Driver) uploadLoop() {
 func (d *Driver) execUpload() {
 	var battleLog string
 	battleOut, err := exec.Command(
-		"python",
+		"python3",
 		"splatnet2statink.py",
 		"-r",
 	).Output()
@@ -157,7 +157,7 @@ func (d *Driver) execUpload() {
 
 	var salmonLog string
 	salmonOut, err := exec.Command(
-		"python",
+		"python3",
 		"splatnet2statink.py",
 		"-r",
 		"--salmon",
