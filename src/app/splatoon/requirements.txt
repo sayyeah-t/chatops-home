@@ -1,4 +1,4 @@
-future==0.16.0
-msgpack-python==0.5.6
-requests==2.12.4
-requests-oauthlib==0.7.0
+future
+msgpack-python
+requests
+requests-oauthlib
